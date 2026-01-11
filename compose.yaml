@@ -2,7 +2,8 @@
 services:
   pihole:
     container_name: pihole
-    image: pihole/pihole:latest
+    hostname: pihole.docker
+    image: pihole/pihole:${PIHOLE_VERSION}
     # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
     ports:
       - "53:53/tcp"
@@ -10,13 +11,16 @@ services:
       - "853:853/tcp"
       - "853:853/udp"
         #- "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
-      - "80:80/tcp"
+        # - "80:80/tcp"
     environment:
       TZ: 'Europe/Berlin'
+      FTLCONF_webserver_api_password: ${WEBPASSWORD}
+      FTLCONF_dns_dnssec: true
       WEBPASSWORD: ${WEBPASSWORD}
       FTLCONF_LOCAL_IPV4: ${IPV4}
       FTLCONF_LOCAL_IPV6: ${IPV6}
       DNSSEC: true 
+
     # Volumes store your data between container upgrades
     volumes:
       - 'etc-pihole:/etc/pihole'
